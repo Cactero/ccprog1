@@ -1,0 +1,42 @@
+/*
+
+    Name: Ryan June M. Gemal
+
+    Section: S17
+
+    Item: GPE Converter
+
+*/
+
+#include <stdio.h>
+
+int main(){
+    float grade = 59;
+    if(grade>=90){
+        printf("00000001");
+    }
+    else if(grade >= 89){
+        printf("00000010");
+    }
+    else if(grade >= 83){
+        printf("00000100");
+    }
+    else if(grade >= 78){
+        printf("00001000");
+    }
+    else if(grade >= 72){
+        printf("00010000");
+    }
+    else if(grade >= 66){
+        printf("00100000");
+    }
+    else if(grade >= 60){
+        printf("01000000");
+    }
+    else if(grade < 60){
+        printf("10000000");
+    }
+    else{
+        printf("Invalid number.");
+    }
+}
