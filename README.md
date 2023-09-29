@@ -1,2 +1,2 @@
 # ccprog1-mp
-Machine Project for CCPROG1 (C)
+CCPROG1 (C) - Programs & Projects
