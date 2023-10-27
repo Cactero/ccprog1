@@ -159,16 +159,16 @@ int showBoard(int p1Tile, int p2Tile, int p1SabotageOrigin, int p1SabotageDest, 
 			  int downOriginA, int downDestA, int downOriginB, int downDestB, int downOriginC, int downDestC, int downOriginD, int downDestD, int downOriginE, int downDestE, int downOriginF, int downDestF){
 	int row;
 	int tile;
-	for (row=10;row>0;row--){
+	for (row=10; row>0; row--){
 		if(row%2==0){
-			for (tile=row*10-1;tile>row*10-11;tile--){
+			for (tile=row*10-1; tile>row*10-11; tile--){
 				showTile(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, tile, 
 						 upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC, upOriginD, upDestD, upOriginE, upDestE, upOriginF, upDestF,
 						 downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC, downOriginD, downDestD, downOriginE, downDestE, downOriginF, downDestF);
 			}
 		}
 		else{
-			for (tile=row*10-10;tile<row*10;tile++){
+			for (tile=row*10-10; tile<row*10; tile++){
 				showTile(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, tile,
 						 upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC, upOriginD, upDestD, upOriginE, upDestE, upOriginF, upDestF,
 						 downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC, downOriginD, downDestD, downOriginE, downDestE, downOriginF, downDestF);
@@ -354,7 +354,16 @@ int startGame(){
 			previousRoll2 = roll;
 		}
 	} while (nWinner == 0);
+	
+	if(p1Tile == 99){
+		nWinner = 1;
+	}
+	else if(p2Tile == 99){
+		nWinner = 2;
+	}
 
+	printf("Player %d wins!", nWinner);
+	
 	return 0;
 }
 
