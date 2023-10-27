@@ -157,16 +157,18 @@ int showTile(int p1Tile, int p2Tile, int p1SabotageOrigin, int p1SabotageDest, i
 int showBoard(int p1Tile, int p2Tile, int p1SabotageOrigin, int p1SabotageDest, int p2SabotageOrigin, int p2SabotageDest,
 			  int upOriginA, int upDestA, int upOriginB, int upDestB, int upOriginC, int upDestC, int upOriginD, int upDestD, int upOriginE, int upDestE, int upOriginF, int upDestF,
 			  int downOriginA, int downDestA, int downOriginB, int downDestB, int downOriginC, int downDestC, int downOriginD, int downDestD, int downOriginE, int downDestE, int downOriginF, int downDestF){
-	for (int row=10;row>0;row--){
+	int row;
+	int tile;
+	for (row=10;row>0;row--){
 		if(row%2==0){
-			for (int tile=row*10-1;tile>row*10-11;tile--){
+			for (tile=row*10-1;tile>row*10-11;tile--){
 				showTile(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, tile, 
 						 upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC, upOriginD, upDestD, upOriginE, upDestE, upOriginF, upDestF,
 						 downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC, downOriginD, downDestD, downOriginE, downDestE, downOriginF, downDestF);
 			}
 		}
 		else{
-			for (int tile=row*10-10;tile<row*10;tile++){
+			for (tile=row*10-10;tile<row*10;tile++){
 				showTile(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, tile,
 						 upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC, upOriginD, upDestD, upOriginE, upDestE, upOriginF, upDestF,
 						 downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC, downOriginD, downDestD, downOriginE, downDestE, downOriginF, downDestF);
@@ -224,6 +226,8 @@ int startGame(){
 
 	int nCurrentPlayer = 1;
 	int roll = 0;
+	int previousRoll1 = 0;
+	int previousRoll2 = 0;
 	int nWinner = 0;
 
 	int p1SabotageOrigin;
@@ -245,35 +249,37 @@ int startGame(){
 	int downOriginE, downDestE;
 	int downOriginF, downDestF;
 
-	for (int i = 1; i<=6; i++){
-		switch(i){
+	int row;
+
+	for (row = 0; row<6; row++){
+		switch(row){
+			case 0:
+				do{
+					checkTiles(row+1, &upOriginA, &upDestA, &downOriginA, &downDestA);
+				} while (upOriginA == upOriginB || upOriginA == upOriginC || upOriginA == upOriginD || upOriginA == upOriginE || upOriginA == upOriginF);
+				break;
 			case 1:
 				do{
-					checkTiles(i, &upOriginA, &upDestA, &downOriginA, &downDestA);
-				} while (upOriginA == upOriginB || upOriginA == upOriginC || upOriginA == upOriginD || upOriginA == upOriginE || upOriginA == upOriginF);
+					checkTiles(row+1, &upOriginB, &upDestB, &downOriginB, &downDestB);
+				} while (upOriginB == upOriginC || upOriginB == upOriginD || upOriginB == upOriginE || upOriginB == upOriginF);
 				break;
 			case 2:
 				do{
-					checkTiles(i, &upOriginB, &upDestB, &downOriginB, &downDestB);
-				} while (upOriginB == upOriginC || upOriginB == upOriginD || upOriginB == upOriginE || upOriginB == upOriginF);
+					checkTiles(row+1, &upOriginC, &upDestC, &downOriginC, &downDestC);
+				} while (upOriginC == upOriginD || upOriginC == upOriginE || upOriginC == upOriginF);
 				break;
 			case 3:
 				do{
-					checkTiles(i, &upOriginC, &upDestC, &downOriginC, &downDestC);
-				} while (upOriginC == upOriginD || upOriginC == upOriginE || upOriginC == upOriginF);
+					checkTiles(row+1, &upOriginD, &upDestD, &downOriginD, &downDestD);
+				} while (upOriginD == upOriginE || upOriginD == upOriginF);
 				break;
 			case 4:
 				do{
-					checkTiles(i, &upOriginD, &upDestD, &downOriginD, &downDestD);
-				} while (upOriginD == upOriginE || upOriginD == upOriginF);
-				break;
-			case 5:
-				do{
-					checkTiles(i, &upOriginE, &upDestE, &downOriginE, &downDestE);
+					checkTiles(row+1, &upOriginE, &upDestE, &downOriginE, &downDestE);
 				} while (upOriginE == upOriginF);
 				break;
-			case 6:
-				checkTiles(i, &upOriginF, &upDestF, &downOriginF, &downDestF);
+			case 5:
+				checkTiles(row+1, &upOriginF, &upDestF, &downOriginF, &downDestF);
 				break;
 		}
 	}
@@ -313,31 +319,40 @@ int startGame(){
 		if(nCurrentPlayer == 1){
 			printf("Player 1's turn!\n");
 			rollDie(&p1Tile, &roll);
+
 			showBoard(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
 					  upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC, upOriginD, upDestD, upOriginE, upDestE, upOriginF, upDestF,
 					  downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC, downOriginD, downDestD, downOriginE, downDestE, downOriginF, downDestF);
-			while(roll == 1){
+
+			if(roll == 1 && previousRoll1 == 1){
 				rollDie(&p1Tile, &roll);
 				showBoard(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
 						  upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC, upOriginD, upDestD, upOriginE, upDestE, upOriginF, upDestF,
 						  downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC, downOriginD, downDestD, downOriginE, downDestE, downOriginF, downDestF);
+				
 			}
 			nCurrentPlayer = 2;
+			previousRoll1 = roll;
 		}
 		else{
 			printf("Player 2's turn!\n");
 			rollDie(&p2Tile, &roll);
+
 			showBoard(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
 					  upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC, upOriginD, upDestD, upOriginE, upDestE, upOriginF, upDestF,
 					  downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC, downOriginD, downDestD, downOriginE, downDestE, downOriginF, downDestF);
-			while(roll == 1){
+					  
+			if(roll == 1 && previousRoll2 == 1){
 				rollDie(&p2Tile, &roll);
 				showBoard(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
 						  upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC, upOriginD, upDestD, upOriginE, upDestE, upOriginF, upDestF,
 						  downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC, downOriginD, downDestD, downOriginE, downDestE, downOriginF, downDestF);
+				
 			}
+
 			nCurrentPlayer = 1;
-	}
+			previousRoll2 = roll;
+		}
 	} while (nWinner == 0);
 
 	return 0;
