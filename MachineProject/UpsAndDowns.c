@@ -1,3 +1,8 @@
+/*
+	Description: This program is a turn-based two-player board game "Ups and Downs"
+	Author: Ryan June Gemal - S17C
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -10,22 +15,188 @@ void exitGame(){
 }
 
 /*
-	showInstructions() - Shows the instructions and mecehanics
+	showInstructions() - Shows the instructions and mechanics
 */
 void showInstructions(){
-	printf(">>=================================================<<\n");
-	printf("|| _____         _               _   _             ||\n");
-	printf("|||     |___ ___| |_ ___ _ _ ___| |_|_|___ ___ ___ ||\n");
-	printf("|||-   -|   |_ -|  _|  _| | |  _|  _| | . |   |_ -|||\n");
-	printf("|||_____|_|_|___|_| |_| |___|___|_| |_|___|_|_|___|||\n");
-	printf(">>=================================================<<\n");
+	printf("\e[1;1H\e[2J"); // Clears the screen
+	printf("\033[0;35m");
+	printf(">>==============================================================<<\n");
+	printf("||\033[0;36m	 _____         _               _   _             	\033[0;35m||\n");
+	printf("||\033[0;36m	|     |___ ___| |_ ___ _ _ ___| |_|_|___ ___ ___ 	\033[0;35m||\n");
+	printf("||\033[0;36m	|-   -|   |_ -|  _|  _| | |  _|  _| | . |   |_ -|	\033[0;35m||\n");
+	printf("||\033[0;36m	|_____|_|_|___|_| |_| |___|___|_| |_|___|_|_|___|	\033[0;35m||\n");
+	printf("||\033[0;36m								\033[0;35m||\n");
+	printf("||\033[0;36m	""Ups and Downs"" is a turn-based two-player board game.	\033[0;35m||\n");
+	printf("||\033[0;36m	The goal is to reach the end (99) of the board.		\033[0;35m||\n");
+	printf("||\033[0;36m	The first one to reach the end point wins the game.	\033[0;35m||\n");
+	printf("||\033[0;36m								\033[0;35m||\n");
+	printf(">>==============================================================<<\n");
 	printf("\n");
-	printf("""Ups and Downs"" is a turn-based two-player board game.\n");
-	printf("The goal of eeach player is to reach the end point of the board.\n");
-	printf("The first one to reach the end point wins the game.\n");
+	printf("\033[0m");
 	printf("\n");
 }
 
+/*
+	settings() - A function that toggles certain features and allows for personalization of player colors
+
+	@param: *sabotageStatus - A pointer for the sabotage feature. 1 if enabled, 0 if disabled
+	@param: *p1Color - A pointer for the color of player 1
+	@param: *p2Color - A pointer for the color of player 2
+*/
+void settings(int *sabotageStatus, int *p1Color, int *p2Color){
+	int mainChoice;
+	int p1colorChoice;
+	int p2colorChoice;
+	printf("\e[1;1H\e[2J"); // Clears the screen
+	do{
+		printf("\033[0;35m");
+		printf(">>======================================<<\n");
+		printf("||                                      ||\n");
+		printf("||\033[0;36m	Settings:			\033[0;35m||\n");
+		if(*sabotageStatus == 1)
+			printf("||\033[0;36m	1. Toggle Sabotage (On)		\033[0;35m||\n");
+		else if(*sabotageStatus == 0)
+			printf("||\033[0;36m	1. Toggle Sabotage (Off)	\033[0;35m||\n");
+		printf("||\033[0;36m	2. \033[0;%dmPlayer 1 \033[0;36mColor		\033[0;35m||\n", *p1Color);
+		printf("||\033[0;36m	3. \033[0;%dmPlayer 2 \033[0;36mColor		\033[0;35m||\n", *p2Color);
+		printf("||\033[0;36m	4. Back to Main Menu		\033[0;35m||\n");
+		printf("||                                      ||\n");
+		printf(">>======================================<<\n");
+		printf(": ");
+		scanf("%d", &mainChoice);
+		printf("\033[0;0m");
+		printf("\e[1;1H\e[2J"); // Clears the screen
+		switch(mainChoice){
+			case 1:
+				if(*sabotageStatus == 0){
+					*sabotageStatus = 1;
+					printf("\033[0;35m>>=======================<<\n");
+					printf("||   \033[0;36mSabotage enabled!   \033[0;35m||\n");
+					printf("\033[0;35m>>=======================<<\n");
+					printf("\n");
+				}
+				else{
+					*sabotageStatus = 0;
+					printf("\033[0;35m>>=======================<<\n");
+					printf("||   \033[0;36mSabotage disabled!   \033[0;35m||\n");
+					printf("\033[0;35m>>=======================<<\n");
+					printf("\n");
+				}
+				break;
+			case 2:
+				printf("\e[1;1H\e[2J"); // Clears the screen
+				printf("\033[0;35m");
+				printf(">>======================================<<\n");
+				printf("||\033[;%dm  ___                                 \033[;35m||\n", *p1Color);
+				printf("||\033[0;%dm |_  |    Player 1 \033[0;36mColor:             \033[;35m||\n", *p1Color);
+				printf("||\033[0;%dm  _| |_   \033[0;36m1.\033[0;34m Blue                     \033[;35m||\n", *p1Color);
+				printf("||\033[0;%dm |_____|  \033[0;36m2.\033[0;32m Green                    \033[;35m||\n", *p1Color);
+				printf("||          \033[0;36m3.\033[0;36m Cyan                     \033[;35m||\n");
+				printf("||          \033[0;36m4.\033[0;31m Red                      \033[;35m||\n");
+				printf("||          \033[0;36m5.\033[0;35m Magenta                  \033[;35m||\n");
+				printf("||          \033[0;36m6.\033[0;33m Yellow                   \033[;35m||\n");
+				printf("||          \033[0;36m7.\033[0;37m White                    \033[;35m||\n");
+				printf("||          \033[0;36m8. Back to Settings         \033[;35m||\n");
+				printf("||                                      ||\n");
+				printf(">>======================================<<\n");
+				printf(": ");
+				scanf("%d", &p1colorChoice);
+				printf("\033[0m");
+				if(p1colorChoice == p2colorChoice)
+					printf("You can't set your color to this as either you or the other player already has it!\n");
+				else{
+					switch(p1colorChoice){
+						case 1:
+							*p1Color = 34;
+							break;
+						case 2:
+							*p1Color = 32;
+							break;
+						case 3:
+							*p1Color = 36;
+							break;
+						case 4:
+							*p1Color = 31;
+							break;
+						case 5:
+							*p1Color = 35;
+							break;
+						case 6:
+							*p1Color = 33;
+							break;
+						case 7:
+							*p1Color = 37;
+							break;
+						case 8:
+							break;
+						default:
+							printf("Invalid input. Try again!\n");
+							break;
+					}
+				}
+				
+				break;
+			case 3:
+				printf("\e[1;1H\e[2J"); // Clears the screen
+				printf("\033[0;35m");
+				printf(">>======================================<<\n");
+				printf("||\033[0;%dm  ___                                 \033[;35m||\n", *p2Color);
+				printf("||\033[0;%dm |_  |    Player 2 Color:             \033[;35m||\n", *p2Color);
+				printf("||\033[0;%dm |  _|    \033[0;36m1.\033[0;34m Blue                     \033[;35m||\n", *p2Color);
+				printf("||\033[0;%dm |___|    \033[0;36m2.\033[0;32m Green                    \033[;35m||\n", *p2Color);
+				printf("||          \033[0;36m3.\033[0;36m Cyan                     \033[;35m||\n");
+				printf("||          \033[0;36m4.\033[0;31m Red                      \033[;35m||\n");
+				printf("||          \033[0;36m5.\033[0;35m Magenta                  \033[;35m||\n");
+				printf("||          \033[0;36m6.\033[0;33m Yellow                   \033[;35m||\n");
+				printf("||          \033[0;36m7.\033[0;37m White                    \033[;35m||\n");
+				printf("||          \033[0;36m8. Back to Settings         \033[;35m||\n");
+				printf("||                                      ||\n");
+				printf(">>======================================<<\n");
+				printf(": ");
+				scanf("%d", &p2colorChoice);
+				printf("\033[0m");
+				if(p1colorChoice == p2colorChoice)
+					printf("\033[0;31mYou can't set your color to this as either you or the other player already has it!\n");
+				else{
+					switch(p2colorChoice){
+						case 1:
+							*p2Color = 34;
+							break;
+						case 2:
+							*p2Color = 32;
+							break;
+						case 3:
+							*p2Color = 36;
+							break;
+						case 4:
+							*p2Color = 31;
+							break;
+						case 5:
+							*p2Color = 35;
+							break;
+						case 6:
+							*p2Color = 33;
+							break;
+						case 7:
+							*p2Color = 37;
+							break;
+						case 8:
+							break;
+						default:
+							printf("\033[0;31mInvalid input. Try again!\n");
+							break;
+					}
+				}
+				
+				break;
+			case 4:
+				break;
+			default:
+				printf("\033[0;31mInvalid input. Try again!\n");
+				break;
+		}
+	} while(mainChoice != 4);
+}
 /*
 	nRandomizer() - generates a random integer within a given range
 
@@ -42,7 +213,7 @@ int nRandomizer(int nLower, int nUpper){
 }
 
 /*
-	Sets the player's current tile to the new tile.
+	setPlayerPosition() - Sets the player's current tile to the new tile.
 
 	@param: *currentPTile - Pointer to the current tile of the player.
 	@param: newPTile - The new tile to set as the player's current tile.
@@ -52,7 +223,7 @@ void setPlayerPosition(int *currentPTile, int newPTile){
 }
 
 /*
-	rollDie() This function rolls a die and sets the player's current tile based on the result of the roll.
+	rollDie() - This function rolls a die and sets the player's current tile based on the result of the roll.
 
 	@param: *currentPTile - A pointer to the player's current tile.
 	@param *roll - A pointer to the result of the die roll.
@@ -72,7 +243,6 @@ void rollDie(int *currentPTile, int *roll){
 	printf(">>=====================<<\n");
 	printf("||   You rolled a %d!   ||\n", nDie);
 	printf(">>=====================<<\n");
-	printf("\n");
 	*roll = nDie;
 	setPlayerPosition(currentPTile, *currentPTile + nDie); // Sets the player's current tile
 }
@@ -146,33 +316,38 @@ int checkDuplicates(int tile, int tile1, int tile2, int tile3, int tile4, int ti
 	showTile() - This function shows the tile based on the given parameters. 
 	It takes in the player tiles, sabotage origins and destinations, tile number, and up/down origins and destinations. 
 	
-	@param p1Tile: integer value representing player 1's tile
-	@param p2Tile: integer value representing player 2's tile
-	@param p1SabotageOrigin: integer value representing player 1's sabotage origin
-	@param p1SabotageDest: integer value representing player 1's sabotage destination
-	@param p2SabotageOrigin: integer value representing player 2's sabotage origin
-	@param p2SabotageDest: integer value representing player 2's sabotage destination
-	@param tile: integer value representing the tile number
-	@param upOriginA: integer value representing the origin of the first up tile
-	@param upDestA: integer value representing the destination of the first up tile
-	@param upOriginB: integer value representing the origin of the second up tile
-	@param upDestB: integer value representing the destination of the second up tile
-	@param upOriginC: integer value representing the origin of the third up tile
-	@param upDestC: integer value representing the destination of the third up tile
-	@param downOriginA: integer value representing the origin of the first down tile
-	@param downDestA: integer value representing the destination of the first down tile
-	@param downOriginB: integer value representing the origin of the second down tile
-	@param downDestB: integer value representing the destination of the second down tile
-	@param downOriginC: integer value representing the origin of the third down tile
-	@param downDestC: integer value representing the destination of the third down tile
+	@param: p1Color - The color of player 1.
+	@param: p2Color - The color of player 2.
+	@param: sabotageStatus - The status of the sabotage feature. 1 if enabled, 0 if disabled.
+	@param: p1Tile - integer value representing player 1's tile
+	@param: p2Tile - integer value representing player 2's tile
+	@param: p1SabotageOrigin - integer value representing player 1's sabotage origin
+	@param: p1SabotageDest - integer value representing player 1's sabotage destination
+	@param: p2SabotageOrigin - integer value representing player 2's sabotage origin
+	@param: p2SabotageDest - integer value representing player 2's sabotage destination
+	@param: tile - integer value representing the tile number
+	@param: upOriginA - integer value representing the origin of the first up tile
+	@param: upDestA - integer value representing the destination of the first up tile
+	@param: upOriginB - integer value representing the origin of the second up tile
+	@param: upDestB - integer value representing the destination of the second up tile
+	@param: upOriginC - integer value representing the origin of the third up tile
+	@param: upDestC - integer value representing the destination of the third up tile
+	@param: downOriginA - integer value representing the origin of the first down tile
+	@param: downDestA - integer value representing the destination of the first down tile
+	@param: downOriginB - integer value representing the origin of the second down tile
+	@param: downDestB - integer value representing the destination of the second down tile
+	@param: downOriginC - integer value representing the origin of the third down tile
+	@param: downDestC - integer value representing the destination of the third down tile
 
 */
-void showTile(int p1Tile, int p2Tile, int p1SabotageOrigin, int p1SabotageDest, int p2SabotageOrigin, int p2SabotageDest, int tile,
+void showTile(int p1Color, int p2Color, int sabotageStatus, int p1Tile, int p2Tile, int p1SabotageOrigin, int p1SabotageDest, int p2SabotageOrigin, int p2SabotageDest, int tile,
 			int upOriginA, int upDestA, int upOriginB, int upDestB, int upOriginC, int upDestC,
 			int downOriginA, int downDestA, int downOriginB, int downDestB, int downOriginC, int downDestC){
 	
-	checkSabotageTile(&p2Tile, p1SabotageOrigin, p1SabotageDest);
-	checkSabotageTile(&p1Tile, p2SabotageOrigin, p2SabotageDest);
+	if(sabotageStatus == 1){
+		checkSabotageTile(&p2Tile, p1SabotageOrigin, p1SabotageDest);
+		checkSabotageTile(&p1Tile, p2SabotageOrigin, p2SabotageDest);
+	}
 
 	checkSpecialTile(&p1Tile, &p2Tile, upOriginA, upDestA);
 	checkSpecialTile(&p1Tile, &p2Tile, upOriginB, upDestB);
@@ -187,21 +362,21 @@ void showTile(int p1Tile, int p2Tile, int p1SabotageOrigin, int p1SabotageDest, 
 		printTile('@');
 	}
 	else if(p1Tile == tile){ //	Checks if player 1 is on the tile
-		printf("\033[0;34m");
+		printf("\033[0;%dm", p1Color);
 		printTile('$');
 	}
 	else if(p2Tile == tile){ // Checks if player 2 is on the tile
-		printf("\033[0;35m");
+		printf("\033[0;%dm", p2Color);
 		printTile('#');
 	}
-
-	else if(tile == p1SabotageOrigin || tile == p1SabotageDest){
-		printf("\033[0;34m");
+	
+	else if((tile == p1SabotageOrigin || tile == p1SabotageDest) && sabotageStatus == 1){	
+		printf("\033[0;%dm", p1Color);
 		printTile('y');
 	}
 
-	else if(tile == p2SabotageOrigin || tile == p2SabotageDest){
-		printf("\033[0;35m");
+	else if((tile == p2SabotageOrigin || tile == p2SabotageDest) && sabotageStatus == 1){
+		printf("\033[0;%dm", p2Color);
 		printTile('z');
 	}
 
@@ -239,65 +414,114 @@ void showTile(int p1Tile, int p2Tile, int p1SabotageOrigin, int p1SabotageDest, 
 
 /*
 	showBoard() - Displays the game board with the current positions of the players and the sabotages, as well as the positions of the ups and downs.
-	@param: p1Tile The tile number of player 1.
-	@param: p2Tile The tile number of player 2.
-	@param: p1SabotageOrigin The origin tile number of player 1's sabotage.
-	@param: p1SabotageDest The destination tile number of player 1's sabotage.
- 	@param: p2SabotageOrigin The origin tile number of player 2's sabotage.
-	@param: p2SabotageDest The destination tile number of player 2's sabotage.
-	@param: upOriginA The origin tile number of the first upward ladder.
-	@param: upDestA The destination tile number of the first upward ladder.
-	@param: upOriginB The origin tile number of the second upward ladder.
-	@param: upDestB The destination tile number of the second upward ladder.
-	@param: upOriginC The origin tile number of the third upward ladder.
-	@param: upDestC The destination tile number of the third upward ladder.
-	@param: downOriginA The origin tile number of the first downward ladder.
-	@param: downDestA The destination tile number of the first downward ladder.
-	@param: downOriginB The origin tile number of the second downward ladder.
-	@param: downDestB The destination tile number of the second downward ladder.
-	@param: downOriginC The origin tile number of the third downward ladder.
-	@param: downDestC The destination tile number of the third downward ladder.
+
+	@param: p1Color - The color of player 1.
+	@param: p2Color - The color of player 2.
+	@param: sabotageStatus - The status of the sabotage feature. 1 if enabled, 0 if disabled.
+	@param: p1Tile - The tile number of player 1.
+	@param: p2Tile - The tile number of player 2.
+	@param: p1SabotageOrigin - The origin tile number of player 1's sabotage.
+	@param: p1SabotageDest - The destination tile number of player 1's sabotage.
+ 	@param: p2SabotageOrigin - The origin tile number of player 2's sabotage.
+	@param: p2SabotageDest - The destination tile number of player 2's sabotage.
+	@param: upOriginA - The origin tile number of the first upward ladder.
+	@param: upDestA - The destination tile number of the first upward ladder.
+	@param: upOriginB - The origin tile number of the second upward ladder.
+	@param: upDestB - The destination tile number of the second upward ladder.
+	@param: upOriginC - The origin tile number of the third upward ladder.
+	@param: upDestC - The destination tile number of the third upward ladder.
+	@param: downOriginA - The origin tile number of the first downward ladder.
+	@param: downDestA - The destination tile number of the first downward ladder.
+	@param: downOriginB - The origin tile number of the second downward ladder.
+	@param: downDestB - The destination tile number of the second downward ladder.
+	@param: downOriginC - The origin tile number of the third downward ladder.
+	@param: downDestC - The destination tile number of the third downward ladder.
 */
-void showBoard(int p1Tile, int p2Tile, int p1SabotageOrigin, int p1SabotageDest, int p2SabotageOrigin, int p2SabotageDest,
+void showBoard(int p1Color, int p2Color, int sabotageStatus, int *p1Tile, int *p2Tile, int p1SabotageOrigin, int p1SabotageDest, int p2SabotageOrigin, int p2SabotageDest,
 			  int upOriginA, int upDestA, int upOriginB, int upDestB, int upOriginC, int upDestC,
 			  int downOriginA, int downDestA, int downOriginB, int downDestB, int downOriginC, int downDestC){
 	int row;
 	int tile;
 
-	if(checkSabotageTile(&p2Tile, p1SabotageOrigin, p1SabotageDest) == 1)
-		printf("Player 2 has been sabotaged!\n");
-
-	
-	if(checkSabotageTile(&p1Tile, p2SabotageOrigin, p2SabotageDest) == 1)
-		printf("Player 1 has been sabotaged!\n");
-
-	if(checkSpecialTile(&p1Tile, &p2Tile, upOriginA, upDestA) == 1 || checkSpecialTile(&p1Tile, &p2Tile, upOriginB, upDestB) == 1 || checkSpecialTile(&p1Tile, &p2Tile, upOriginC, upDestC) == 1)
-		printf("You have climbed up an up tile!\n");
-
-	if(checkSpecialTile(&p1Tile, &p2Tile, downOriginA, downDestA) == 1 || checkSpecialTile(&p1Tile, &p2Tile, downOriginB, downDestB) == 1 || checkSpecialTile(&p1Tile, &p2Tile, downOriginC, downDestC) == 1){
-		printf("You have climbed down a down tile!\n");
+	if(sabotageStatus == 1){
+		if(checkSabotageTile(p2Tile, p1SabotageOrigin, p1SabotageDest) == 1){
+			printf("\n");
+			printf(">>=======================================<<\n");
+			printf("||					||\n");
+			printf("Player 2 has been sabotaged!\n");
+			printf("||	\033[0;36mGoing from %d to %d	\033[0;35m||\n", p1SabotageOrigin, p1SabotageDest);
+			printf("||					||\n");
+			printf(">>=======================================<<\n");
+		}
+		if(checkSabotageTile(p1Tile, p2SabotageOrigin, p2SabotageDest) == 1){
+			printf("\n");
+			printf(">>=======================================<<\n");
+			printf("||					||\n");
+			printf("Player 1 has been sabotaged!\n");
+			printf("||	\033[0;36mGoing from %d to %d	\033[0;35m||\n", p2SabotageOrigin, p2SabotageDest);
+			printf("||					||\n");
+			printf(">>=======================================<<\n");
+		}
 	}
+
+	if(checkSpecialTile(p1Tile, p2Tile, upOriginA, upDestA) == 1 || checkSpecialTile(p1Tile, p2Tile, upOriginB, upDestB) == 1 || checkSpecialTile(p1Tile, p2Tile, upOriginC, upDestC) == 1){
+		printf("\n");
+		printf("\033[0;35m");
+		printf(">>======================================<<\n");
+		printf("||					||\n");
+		printf("||	\033[0;36mYou have climbed an up tile!	\033[0;35m||\n");
+		if(*p1Tile == upDestA || *p2Tile == upDestA)
+			printf("||	\033[0;36mGoing up from %d to %d!		\033[0;35m||\n", upOriginA, upDestA);
+		else if(*p1Tile == upDestB || *p2Tile == upDestB)
+			printf("||	\033[0;36mGoing up from %d to %d!		\033[0;35m||\n", upOriginB, upDestB);
+
+		else if(*p1Tile == upDestC || *p2Tile == upDestC)
+			printf("||	\033[0;36mGoing up from %d to %d!		\033[0;35m||\n", upOriginC, upDestC);
+		printf("||					||\n");
+		printf(">>======================================<<\n");
+	}
+	if(checkSpecialTile(p1Tile, p2Tile, downOriginA, downDestA) == 1 || checkSpecialTile(p1Tile, p2Tile, downOriginB, downDestB) == 1 || checkSpecialTile(p1Tile, p2Tile, downOriginC, downDestC) == 1){
+		printf("\n");
+		printf("\033[0;35m");
+		printf(">>======================================<<\n");
+		printf("||					||\n");
+		printf("||	\033[0;36mYou fell on a down tile!	\033[0;35m||\n");
+		if(*p1Tile == downDestA || *p2Tile == downDestA)
+			printf("||	\033[0;36mGoing down from %d to %d!	\033[0;35m||\n", downOriginA, downDestA);
+		else if(*p1Tile == downDestB || *p2Tile == downDestB)
+			printf("||	\033[0;36mGoing down from %d to %d!	\033[0;35m||\n", downOriginB, downDestB);
+		else if(*p1Tile == downDestC || *p2Tile == downDestC)
+			printf("||	\033[0;36mGoing down from %d to %d!	\033[0;35m||\n", downOriginC, downDestC);
+		printf("||					||\n");
+		printf(">>======================================<<\n");
+	}
+	printf("\n");
+	printf("\033[0;35m");
 	printf(">>==============================<<\n");
 	for (row=10; row>0; row--){
+		printf("\033[0;35m");
 		printf("||");
+		printf("\e[0;37m");
 		if(row%2==0){
 			for (tile=row*10-1; tile>row*10-11; tile--){
-				showTile(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, tile, 
+				showTile(p1Color, p2Color, sabotageStatus, *p1Tile, *p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, tile, 
 						 upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC,
 						 downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC);
 			}
 		}
 		else{
 			for (tile=row*10-10; tile<row*10; tile++){
-				showTile(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, tile,
+				showTile(p1Color, p2Color, sabotageStatus, *p1Tile, *p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, tile,
 						 upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC,
 						 downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC);
 			}
 		}
+		printf("\033[0;35m");
 		printf("||");
 		printf("\n");
 	}
 	printf(">>==============================<<\n");
+	printf("\e[0;37m");
 
 }
 /*
@@ -461,16 +685,22 @@ void initializeTiles(int *upOriginA, int *upDestA, int *downOriginA, int *downDe
 }
 /*
 	startGame() - Starts the game by initializing the tiles and the players' positions.
-*/
-void startGame(){
 
+	@param: sabotageStatus - The status of the sabotage feature. 1 if enabled, 0 if disabled.
+	@param: p1Color - The color of player 1.
+	@param: p2Color - The color of player 2.
+*/
+void startGame(int sabotageStatus, int p1Color, int p2Color){
+	printf("\e[1;1H\e[2J"); // Clears the screen
+	printf("\033[0;35m");
 	printf(">>=====================================<<\n");
-	printf("|| _____ _           _   _             ||\n");
-	printf("|||   __| |_ ___ ___| |_|_|___ ___     ||\n");
-	printf("|||__   |  _| .'|  _|  _| |   | . |_ _ ||\n");
-	printf("|||_____|_| |__,|_| |_| |_|_|_|_  |_|_|||\n");
-	printf("||                            |___|    ||\n");
+	printf("||\033[0;36m _____ _           _   _             \033[0;35m||\n");
+	printf("||\033[0;36m|   __| |_ ___ ___| |_|_|___ ___     \033[0;35m||\n");
+	printf("||\033[0;36m|__   |  _| .'|  _|  _| |   | . |_ _ \033[0;35m||\n");
+	printf("||\033[0;36m|_____|_| |__,|_| |_| |_|_|_|_  |_|_|\033[0;35m||\n");
+	printf("||\033[0;36m                            |___|    \033[0;35m||\n");
 	printf(">>=====================================<<\n");
+	printf("\033[0m");
 
 	int p1Tile = 0;
 	int p2Tile = 0;
@@ -498,15 +728,19 @@ void startGame(){
 	initializeTiles(&upOriginA, &upDestA, &downOriginA, &downDestA, &upOriginB, &upDestB, &downOriginB, &downDestB, &upOriginC, &upDestC, &downOriginC, &downDestC);
 
 	printf("\n");
-	printf("     .		A: %d %d      ;;;;;\n", upOriginA, upDestA);
- 	printf("   .:;:.	B: %d %d      ;;;;;\n", upOriginB, upOriginC);
- 	printf(" .:;;;;;:.	C: %d %d      ;;;;;\n", upOriginC, upDestC);
-	printf("   ;;;;;                      ;;;;;\n");
-	printf("   ;;;;;	a: %d %d    ..;;;;;..\n", downOriginA, downDestA);
-	printf("   ;;;;;	b: %d %d     ':::::'\n", downOriginB, downOriginB);
-	printf("   ;;;;;	c: %d %d       ':`\n", downOriginC, downOriginC);
+	printf("\e[1;32m     .	\e[1;36m	 A: %d %d	\e[1;31m  ;;;;;\n", upOriginA, upDestA);
+ 	printf("\e[1;32m   .:;:.\e[1;36m	 B: %d %d	\e[1;31m  ;;;;;\n", upOriginB, upOriginC);
+ 	printf("\e[1;32m .:;;;;;:.\e[1;36m	 C: %d %d	\e[1;31m  ;;;;;\n", upOriginC, upDestC);
+	printf("\e[1;32m   ;;;;;			 \e[1;31m ;;;;;\n");
+	printf("\e[1;32m   ;;;;;\e[1;36m	 a: %d %d	\e[1;31m..;;;;;..\n", downOriginA, downDestA);
+	printf("\e[1;32m   ;;;;;\e[1;36m	 b: %d %d	\e[1;31m ':::::'\n", downOriginB, downOriginB);
+	printf("\e[1;32m   ;;;;;\e[1;36m	 c: %d %d	\e[1;31m   ':`\n", downOriginC, downOriginC);
 	printf("\n");
-	do{
+
+	if(sabotageStatus == 1){
+		// This part of the code is for the sabotage feature.
+		do{
+			printf("\033[0;%dm", p1Color);
 			printf(">>======================================<<\n");
 			printf("||  ___                                 ||\n");
 			printf("|| |_  |    Player 1:                   ||\n");
@@ -515,101 +749,138 @@ void startGame(){
 			printf("||          Ex: 85 42                   ||\n");
 			printf(">>======================================<<\n");
 			printf(": ");
-		scanf("%d %d", &p1SabotageOrigin, &p1SabotageDest);
-		if (checkDuplicates(p1SabotageOrigin, upOriginA, upOriginB, upOriginC, downOriginA, downOriginB, downOriginC) ||
-			checkDuplicates(p1SabotageDest, upDestA, upDestB, upDestC, downDestA, downDestB, downDestC))
-				printf("You may not place a down tile on this tile as it is occupied by a special tile. Try again! \n");
-		else if (p1SabotageOrigin <= 9 || p1SabotageDest <= 9)
-			printf("You may not place a down tile on the first row and below 0. Try again! \n");
-		else if (p1SabotageOrigin >= 99 || p1SabotageDest >= 99)
-			printf("You may not place a down tile on the 99th tile and above. Try again! \n");
-		else if (p1SabotageOrigin == p1SabotageDest)
-			printf("You may not place a down tile in the same tile. Try again! \n");
-		else if(p1SabotageDest > p1SabotageOrigin)
-			printf("You may not place a down tile with a destination tile that is higher than the origin tile. Try again! \n");
-	} while (p1SabotageOrigin <= 9 || p1SabotageOrigin >= 99 || p1SabotageDest <= 9 || p1SabotageDest >= 99 || p1SabotageOrigin == p1SabotageDest || 
-			checkDuplicates(p1SabotageOrigin, upOriginA, upOriginB, upOriginC, downOriginA, downOriginB, downOriginC) ||
-			checkDuplicates(p1SabotageDest, upDestA, upDestB, upDestC, downDestA, downDestB, downDestC) || p1SabotageDest > p1SabotageOrigin);
+			
+			scanf("%d %d", &p1SabotageOrigin, &p1SabotageDest);
+			if (checkDuplicates(p1SabotageOrigin, upOriginA, upOriginB, upOriginC, downOriginA, downOriginB, downOriginC) ||
+				checkDuplicates(p1SabotageDest, upDestA, upDestB, upDestC, downDestA, downDestB, downDestC))
+					printf("\033[0;31mYou may not place a down tile on this tile as it is occupied by a special tile. Try again! \n");
+			else if (p1SabotageOrigin <= 9 || p1SabotageDest <= 9)
+				printf("\033[0;31mYou may not place a down tile on the first row and below 0. Try again! \n");
+			else if (p1SabotageOrigin >= 99 || p1SabotageDest >= 99)
+				printf("\033[0;31mYou may not place a down tile on the 99th tile and above. Try again! \n");
+			else if (p1SabotageOrigin == p1SabotageDest)
+				printf("\033[0;31mYou may not place a down tile in the same tile. Try again! \n");
+			else if(p1SabotageDest > p1SabotageOrigin)
+				printf("\033[0;31mYou may not place a down tile with a destination tile that is higher than the origin tile. Try again! \n");
 
+			printf("\033[0m");
+		} while (p1SabotageOrigin <= 9 || p1SabotageOrigin >= 99 || p1SabotageDest <= 9 || p1SabotageDest >= 99 || p1SabotageOrigin == p1SabotageDest || 
+				checkDuplicates(p1SabotageOrigin, upOriginA, upOriginB, upOriginC, downOriginA, downOriginB, downOriginC) ||
+				checkDuplicates(p1SabotageDest, upDestA, upDestB, upDestC, downDestA, downDestB, downDestC) || p1SabotageDest > p1SabotageOrigin);
 
+		do{
+			printf("\033[0;%dm", p2Color);
+			printf(">>======================================<<\n");
+			printf("||  ___                                 ||\n");
+			printf("|| |_  |  Player 2:                     ||\n");
+			printf("|| |  _|  You may place a down tile     ||\n");
+			printf("|| |___|  and its link on the board.    ||\n");
+			printf("||        Ex: 85 42                     ||\n");
+			printf(">>======================================<<\n");
+			printf(": ");
+			scanf("%d %d", &p2SabotageOrigin, &p2SabotageDest);
+			
+			/*
+			This code block checks various conditions for placing a down tile in a game.
+			It first checks if the origin and destination tiles are not occupied by special tiles.
+			Then it checks if the origin and destination tiles are within the valid range.
+			Next, it checks if the origin and destination tiles are not the same as player 1's tiles.
+			Finally, it checks if the destination tile is not higher than the origin tile.
+			If any of these conditions are not met, an appropriate error message is printed.
+			The code block continues to execute until all conditions are satisfied.
+			*/
 
-	do{
-		printf(">>======================================<<\n");
-		printf("||  ___                               ||\n");
-		printf("|| |_  |  Player 2:                   ||\n");
-		printf("|| |  _|  You may place a down tile   ||\n");
-		printf("|| |___|  and its link on the board.  ||\n");
-		printf("||        Ex: 85 42                   ||\n");
-		printf(">>======================================<<\n");
-		printf(": ");
-		scanf("%d %d", &p2SabotageOrigin, &p2SabotageDest);
-		
-		if (checkDuplicates(p2SabotageOrigin, upOriginA, upOriginB, upOriginC, downOriginA, downOriginB, downOriginC) ||
-			checkDuplicates(p2SabotageDest, upDestA, upDestB, upDestC, downDestA, downDestB, downDestC))
-				printf("You may not place a down tile on this tile as it is occupied by a special tile. Try again! \n");
-		else if (p2SabotageOrigin <= 9 || p2SabotageDest <= 9)
-			printf("You may not place a down tile on the first row and below 0. Try again! \n");
-		else if (p2SabotageOrigin >= 99 || p2SabotageDest >= 99)
-			printf("You may not place a down tile on the 99th tile and above. Try again! \n"); 
-		else if (p2SabotageOrigin == p1SabotageOrigin || p2SabotageOrigin == p1SabotageDest || p2SabotageDest == p1SabotageOrigin || p2SabotageDest == p1SabotageDest)
-			printf("You may not place a down tile in the same tile or the same tile as player 1. Try again! \n");
-		else if(p2SabotageDest > p2SabotageOrigin)
-			printf("You may not place a down tile with a destination tile that is higher than the origin tile. Try again! \n");
-	} while (p2SabotageOrigin <= 9 || p2SabotageOrigin >= 99 || p2SabotageDest <= 9 || p2SabotageDest >= 100 || p2SabotageOrigin == p1SabotageOrigin || 
-			p2SabotageOrigin == p1SabotageDest || p2SabotageDest == p1SabotageOrigin || p2SabotageDest == p1SabotageDest ||
-			checkDuplicates(p2SabotageOrigin, upOriginA, upOriginB, upOriginC, downOriginA, downOriginB, downOriginC) ||
-			checkDuplicates(p2SabotageDest, upDestA, upDestB, upDestC, downDestA, downDestB, downDestC) || p2SabotageDest > p2SabotageOrigin);
+			if (checkDuplicates(p2SabotageOrigin, upOriginA, upOriginB, upOriginC, downOriginA, downOriginB, downOriginC) ||
+				checkDuplicates(p2SabotageDest, upDestA, upDestB, upDestC, downDestA, downDestB, downDestC))
+					printf("\033[0;31mYou may not place a down tile on this tile as it is occupied by a special tile. Try again! \n");
+			else if (p2SabotageOrigin <= 9 || p2SabotageDest <= 9)
+				printf("\033[0;31mYou may not place a down tile on the first row and below 0. Try again! \n");
+			else if (p2SabotageOrigin >= 99 || p2SabotageDest >= 99)
+				printf("\033[0;31mYou may not place a down tile on the 99th tile and above. Try again! \n"); 
+			else if (p2SabotageOrigin == p1SabotageOrigin || p2SabotageOrigin == p1SabotageDest || p2SabotageDest == p1SabotageOrigin || p2SabotageDest == p1SabotageDest)
+				printf("\033[0;31mYou may not place a down tile in the same tile or the same tile as player 1. Try again! \n");
+			else if(p2SabotageDest > p2SabotageOrigin)
+				printf("\033[0;31mYou may not place a down tile with a destination tile that is higher than the origin tile. Try again! \n");
+			printf("\033[0m");
+		} while (p2SabotageOrigin <= 9 || p2SabotageOrigin >= 99 || p2SabotageDest <= 9 || p2SabotageDest >= 100 || p2SabotageOrigin == p1SabotageOrigin || 
+				p2SabotageOrigin == p1SabotageDest || p2SabotageDest == p1SabotageOrigin || p2SabotageDest == p1SabotageDest ||
+				checkDuplicates(p2SabotageOrigin, upOriginA, upOriginB, upOriginC, downOriginA, downOriginB, downOriginC) ||
+				checkDuplicates(p2SabotageDest, upDestA, upDestB, upDestC, downDestA, downDestB, downDestC) || p2SabotageDest > p2SabotageOrigin);
+	}
 
-	showBoard(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
+	// This part of the code is for the game itself.
+	showBoard(p1Color, p2Color, sabotageStatus, &p1Tile, &p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
 			  upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC,
 			  downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC);
 
+	printf("\n");
+
 	do{	
-		printf("\e[1;1H\e[2J"); // Clears the screen
 		if(nCurrentPlayer == 1){
 			prevP1 = p1Tile;
-			printf(">>======================================<<\n");
+			printf("\033[0;%dm", p1Color);
+			printf(">>=======================================<<\n");
 			printf("||  ___                                  ||\n");
-			printf("|| |_  |    Player 1: Tile %d             ||\n", p1Tile);
+			printf("|| |_  |    Player 1 ($): Tile %d	 ||\n", p1Tile);
 			printf("||  _| |_   Enter R to roll the die!     ||\n");
 			printf("|| |_____|                               ||\n");
-			printf(">>======================================<<\n");
+			printf(">>=======================================<<\n");
 			printf(": ");
 			rollDie(&p1Tile, &roll);
-			showBoard(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
+
+			printf("\n");
+			printf("\033[0;%dm", p1Color);
+			printf(">>==============================<<\n");
+			if(p1Tile-prevP1 == 0)
+				printf("||	  You don't move!	||\n");
+			else
+				printf("||     Moving from %d to %d!	||\n", prevP1, p1Tile);
+			printf(">>==============================<<\n");
+
+			// showBoard prints the board with the current positions of the players and the sabotages, as well as the positions of the ups and downs.
+			showBoard(p1Color, p2Color, sabotageStatus, &p1Tile, &p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
 					  upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC,
 					  downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC);
-				printf("\n");
-				printf(">>===========================<<\n");
-				printf("||   Moving from %d to %d      ||\n", prevP1, p1Tile);
-				printf(">>===========================<<\n");
-				printf("\n");
-			
-						
-				printf("Enter c to continue: ");
-				char enter = 0;
-				while (enter != 'C' && enter != 'c'){
-					scanf("%c", &enter); 
-				}
+			printf("\n");
+			printf("\033[0;%dm", p1Color);
+			printf(">>==============================<<\n");
+			printf("||     Enter C to continue	||\n");
+			printf(">>==============================<<\n");
+			printf("\n");
+			printf(": ");
+			char enter = 0;
+			while (enter != 'C' && enter != 'c'){
+				scanf("%c", &enter); 
+				printf("\033[0m");
+			}
 				
 			if(roll == 1 && previousRoll1 == 1){
 				prevP1 = p1Tile;
 				rollDie(&p1Tile, &roll);
-				showBoard(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
+				printf("\n");
+				printf("\033[0;%dm", p1Color);
+				printf(">>==============================<<\n");
+				if(p1Tile-prevP1 == 0)
+					printf("||	  You don't move!	||\n");
+				else
+					printf("||     Moving from %d to %d!	||\n", prevP1, p1Tile);
+				printf(">>==============================<<\n");
+				showBoard(p1Color, p2Color, sabotageStatus, &p1Tile, &p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
 						  upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC,
 						  downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC);
-
-				printf(">>=========================<<\n");
-				printf("||   Moving from %d to %d    ||\n", prevP1, p1Tile);
-				printf(">>=========================<<\n");
 				printf("\n");
-
-							
-				printf("Enter c to continue: ");
+				printf("\033[0;%dm", p1Color);
+				printf(">>==============================<<\n");
+				printf("||     Enter C to continue	||\n");
+				printf(">>==============================<<\n");
+				printf("\n");
+				printf(": ");
 				char enter = 0;
 				while (enter != 'C' && enter != 'c'){
 					scanf("%c", &enter); 
+					printf("\033[0m");
 				}
+
 			}
 
 			
@@ -618,48 +889,73 @@ void startGame(){
 		}
 		else{
 			prevP2 = p2Tile;
+			printf("\033[0;%dm", p2Color);
 			printf(">>======================================<<\n");
 			printf("||  ___                                 ||\n");
-			printf("|| |_  |  Player 2: Tile %d              ||\n", p2Tile);
+			printf("|| |_  |  Player 2 (#): Tile %d		||\n", p2Tile);
 			printf("|| |  _|  Enter R to roll the die!      ||\n");
 			printf("|| |___|                                ||\n");
 			printf(">>======================================<<\n");
 			printf(": ");
 			rollDie(&p2Tile, &roll);
-			
-			showBoard(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
+
+			printf("\n");
+			printf("\033[0;%dm", p2Color);
+			printf(">>==============================<<\n");
+			if(p2Tile-prevP1 == 0)
+				printf("||	  You don't move!	||\n");
+			else
+				printf("||     Moving from %d to %d!	||\n", prevP2, p2Tile);
+			printf(">>==============================<<\n");
+
+			showBoard(p1Color, p2Color, sabotageStatus, &p1Tile, &p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
 					  upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC,
 					  downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC);
+			
 			printf("\n");
-			printf(">>=========================<<\n");
-			printf("||   Moving from %d to %d  ||\n", prevP2, p1Tile);
-			printf(">>=========================<<\n");
+			printf("\033[0;%dm", p1Color);
+			printf(">>==============================<<\n");
+			printf("||     Enter C to continue	||\n");
+			printf(">>==============================<<\n");
 			printf("\n");
-
-					
-			printf("Enter c to continue: ");
+			printf(": ");
+				
 			char enter = 0;
 			while (enter != 'C' && enter != 'c'){
 				scanf("%c", &enter); 
+				printf("\033[0m");
 			}
 			
 			if(roll == 1 && previousRoll2 == 1){
 				prevP2 = p2Tile;
 				rollDie(&p2Tile, &roll);
-				showBoard(p1Tile, p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
+					
+				printf("\n");
+				printf("\033[0;%dm", p2Color);
+				printf(">>==============================<<\n");
+				if(p2Tile-prevP1 == 0)
+					printf("||	You don't move!	||\n");
+				else
+					printf("||     Moving from %d to %d!	||\n", prevP2, p2Tile);
+				printf(">>==============================<<\n");
+
+				showBoard(p1Color, p2Color, sabotageStatus, &p1Tile, &p2Tile, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
 						  upOriginA, upDestA, upOriginB, upDestB, upOriginC, upDestC,
 						  downOriginA, downDestA, downOriginB, downDestB, downOriginC, downDestC);
+				
 				printf("\n");
-				printf(">>=========================<<\n");
-				printf("||   Moving from %d to %d  ||\n", prevP1, p1Tile);
-				printf(">>=========================<<\n");
+				printf("\033[0;%dm", p1Color);
+				printf(">>==============================<<\n");
+				printf("||     Enter C to continue	||\n");
+				printf(">>==============================<<\n");
 				printf("\n");
-							
-				printf("Enter c to continue: ");
+				printf(": ");
+				
 				char enter = 0;
 				while (enter != 'C' && enter != 'c'){
 					scanf("%c", &enter); 
 				}
+				printf("\033[0m");
 			}
 
 			nCurrentPlayer = 1;
@@ -671,55 +967,99 @@ void startGame(){
 		else if(p2Tile >= 99){
 			nWinner = 2;
 		}
+
+		printf("\e[1;1H\e[2J"); // Clears the screen
 	} while (nWinner == 0);
 
-	printf("Player %d wins!\n", nWinner);
+	if(nWinner == 1){
+		printf("\033[0;%dm", p1Color);
+		printf(">>======================================<<\n");
+		printf("||  ___                                 ||\n");
+		printf("|| |_  |       Player 1 wins!	 	||\n");
+		printf("||  _| |_                               ||\n");
+		printf("|| |_____|                              ||\n");
+		printf(">>======================================<<\n");
+	}
+
+	else if(nWinner == 2){
+		printf("\033[0;%dm", p2Color);
+		printf(">>======================================<<\n");
+		printf("||  ___                                 ||\n");
+		printf("|| |_  |        Player 2 wins!		||\n");
+		printf("|| |  _|                                ||\n");
+		printf("|| |___|                                ||\n");
+		printf(">>======================================<<\n");
+	}
 
 }
 
 int main(){
 	int userInput;
+	int sabotageStatus = 0;
+	int p1Color = 0;
+	int p2Color = 0;
 	srand(time(0));
-		do{
+	
+		do{	
+			printf("\033[0;35m");
 			printf(">>============================================================<<\n");
-			printf("||                                                         __ ||\n");
-			printf("|| _____                      _    ____                   |  |||\n");
-			printf("|||  |  |___ ___    ___ ___ _| |  |    \\ ___ _ _ _ ___ ___|  |||\n");
-			printf("|||  |  | . |_ -|  | .'|   | . |  |  |  | . | | | |   |_ -|__|||\n");
-			printf("|||_____|  _|___|  |__,|_|_|___|  |____/|___|_____|_|_|___|__|||\n");
-			printf("||      |_|                                                   ||\n");
+			printf("||\033[0;36m                                                         __ \033[0;35m||\n");
+			printf("||\033[0;36m _____                      _    ____                   |  |\033[0;35m||\n");
+			printf("||\033[0;36m|  |  |___ ___    ___ ___ _| |  |    \\ ___ _ _ _ ___ ___|  |\033[0;35m||\n");
+			printf("||\033[0;36m|  |  | . |_ -|  | .'|   | . |  |  |  | . | | | |   |_ -|__|\033[0;35m||\n");
+			printf("||\033[0;36m|_____|  _|___|  |__,|_|_|___|  |____/|___|_____|_|_|___|__|\033[0;35m||\n");
+			printf("||\033[0;36m      |_|                                                   \033[0;35m||\n");
 			printf(">>============================================================<<\n");	
-			printf("                 Welcome to Ups and Downs!\n");
-			printf("                  Please select an option:\n");
+			printf("                 \033[0;36mWelcome to Ups and Downs!\n");
+			printf("                  Please select an option:\033[0;35m\n");
 			printf(">>============================================================<<\n");
 
-			printf("                    [1] Start Game\n");
-			printf("                    [2] Instructions\n");
-			printf("                    [3] Exit\n");
+			printf("                    \033[0;35m[1] \033[0;36mStart Game\n");
+			printf("                    \033[0;35m[2] \033[0;36mExit\n");
+			printf("                    \033[0;35m[3] \033[0;36mInstructions\n");
+			printf("                    \033[0;35m[4] \033[0;36mSettings\n");
 			printf("                    : ");
 			scanf("%d", &userInput);
+			printf("\033[0m");
 			switch(userInput){
 				case 1:
-					startGame();
-					printf("Do you want to play again?\n");
-					printf("[1] Play again\n");
-					printf("[2] Back to main menu\n");
-					printf("[3] Exit\n");
+					startGame(sabotageStatus, p1Color, p2Color);
+					printf("\n");
+					printf("\033[0;35m");
+					printf(">>============================================================<<\n");	
+					printf("                 \033[0;36m   Back to main menu?\n");
+					printf("                  Please select an option:\033[0;35m\n");
+					printf(">>============================================================<<\n");
+					printf("\033[0;35m[1] \033[0;36mMain Menu\n");
+					printf("\033[0;35m[2] \033[0;36mExit\n");
+					printf(": ");
 					scanf("%d", &userInput);
+					printf("\033[0m");
 					break;
 				case 2:
-					showInstructions();
-					printf("Start game or back to the main menu?\n");
-					printf("[1] Yes\n");
-					printf("[2] No (Exit)\n");
-					scanf("%d", &userInput);
-					break;
-				case 3:
 					exitGame();
 					break;
-
-		}
-	} while(userInput != 3);
+				case 3:
+					showInstructions();
+					printf("\\033[0;35m");
+					printf(">>============================================================<<\n");	
+					printf("                 \033[0;36mBack to main menu?\n");
+					printf("                  Please select an option:\033[0;35m\n");
+					printf(">>============================================================<<\n");
+					printf("\033[0;35m[1] \033[0;36mMain Menu\n");
+					printf("\033[0;35m[2] \033[0;36mExit\n");
+					printf(": ");
+					scanf("%d", &userInput);
+					printf("\033[0m");
+					break;
+				case 4:
+					settings(&sabotageStatus, &p1Color, &p2Color);
+					break;
+				default:
+					break;
+			}
+			printf("\e[1;1H\e[2J"); // Clears the screen
+	} while(userInput != 2);
 
 	return 0;
 }
