@@ -78,7 +78,7 @@ void settings(int *sabotageStatus, int *p1Color, int *p2Color){
 				else{
 					*sabotageStatus = 0;
 					printf("\033[0;35m>>=======================<<\n");
-					printf("||   \033[0;36mSabotage disabled!   \033[0;35m||\n");
+					printf("||   \033[0;36mSabotage disabled!  \033[0;35m||\n");
 					printf("\033[0;35m>>=======================<<\n");
 					printf("\n");
 				}
@@ -198,7 +198,7 @@ void settings(int *sabotageStatus, int *p1Color, int *p2Color){
 	} while(mainChoice != 4);
 }
 /*
-	nRandomizer() - generates a random integer within a given range
+	nRandomizer() - Generates a random integer within a given range
 
 	This function takes in two integer parameters, nLower and nUpper, and returns a random integer within the range [nLower, nUpper].
  
@@ -208,7 +208,12 @@ void settings(int *sabotageStatus, int *p1Color, int *p2Color){
 	@return: An integer value within the range [nLower, nUpper]
  */
 int nRandomizer(int nLower, int nUpper){
-	int nRand = (rand() % (nUpper-nLower+1)) + nLower;
+	if(nLower > nUpper){
+        int nTemp = nLower;
+        nLower = nUpper;
+        nUpper = nTemp;
+    }
+    int nRand = (rand() % (nUpper-nLower+1)) + nLower;
 	return nRand;
 }
 
@@ -245,16 +250,6 @@ void rollDie(int *currentPTile, int *roll){
 	printf(">>=====================<<\n");
 	*roll = nDie;
 	setPlayerPosition(currentPTile, *currentPTile + nDie); // Sets the player's current tile
-}
-
-/*
-	printTile()- Prints a tile depending on the tile type
-
-	@param: tileType - type of tile (player, normal, special, sabotage)
-*/
-void printTile(char tileType){
-	printf(" %c ", tileType); // Prints the tile with the player's character
-	printf("\033[0m"); // Resets the color to default
 }
 
 /*
@@ -295,6 +290,114 @@ int checkSabotageTile(int *pTile, int originTile, int destinationTile){
 		return 0;
 }
 
+
+/*
+	printTile()- Prints and checks a tile depending on the tile type, as well as the current tile on the board being displayed
+
+	@param: tile - The current tile on the board being displayed.
+	@param: sabotageStatus - The status of the sabotage feature. 1 if enabled, 0 if disabled.
+	@param: p1Color - The color of player 1.
+	@param: p2Color - The color of player 2.
+	@param: p1SabotageOrigin - The origin tile number of player 1's sabotage.
+	@param: p1SabotageDest - The destination tile number of player 1's sabotage.
+ 	@param: p2SabotageOrigin - The origin tile number of player 2's sabotage.
+	@param: p2SabotageDest - The destination tile number of player 2's sabotage.
+	@param: upA - The tile numbers of the first upward ladder.
+	@param: upB - The tile numbers of the second upward ladder.
+	@param: upC - The tile numbers of the third upward ladder.
+	@param: downA - The tile numbers of the first downward ladder.
+	@param: downB - The tile numbers of the second downward ladder.
+	@param: downC - The tile numbers of the third downward ladder.
+	@param: p1Tile - The pointer to the tile number of player 1.
+	@param: p2Tile - The pointer to the tile number of player 2.
+*/
+void printTile(int tile, int sabotageStatus, int p1Color, int p2Color, int p1SabotageOrigin, int p1SabotageDest, 
+			   int p2SabotageOrigin, int p2SabotageDest, int upA, int upB, int upC, int downA, int downB, int downC, 
+			   int *p1Tile, int *p2Tile){
+
+	int upOriginA = upA/100;
+	int upDestA = upA%100;
+	int upOriginB = upB/100;
+	int upDestB = upB%100;
+	int upOriginC = upC/100;
+	int upDestC = upC%100;
+
+	int downOriginA = downA/100;
+	int downDestA = downA%100;
+	int downOriginB = downB/100;
+	int downDestB = downB%100;
+	int downOriginC = downC/100;
+	int downDestC = downC%100;
+
+	if(sabotageStatus == 1){
+					checkSabotageTile(p2Tile, p1SabotageOrigin, p1SabotageDest);
+					checkSabotageTile(p1Tile, p2SabotageOrigin, p2SabotageDest);
+	}
+
+	checkSpecialTile(p1Tile, p2Tile, upOriginA, upDestA);
+	checkSpecialTile(p1Tile, p2Tile, upOriginB, upDestB);
+	checkSpecialTile(p1Tile, p2Tile, upOriginC, upDestC);
+				
+	checkSpecialTile(p1Tile, p2Tile, downOriginA, downDestA);
+	checkSpecialTile(p1Tile, p2Tile, downOriginB, downDestB);
+	checkSpecialTile(p1Tile, p2Tile, downOriginC, downDestC);
+
+	if(*p1Tile == tile && *p2Tile == tile){ // Checks if both players are on the same tile
+		printf("\033[0;33m");
+		printf(" %c ", '@'); 
+	}
+	else if(*p1Tile == tile){ //	Checks if player 1 is on the tile
+		printf("\033[0;%dm", p1Color);
+		printf(" %c ", '$'); 
+	}
+	else if(*p2Tile == tile){ // Checks if player 2 is on the tile
+		printf("\033[0;%dm", p2Color);
+		printf(" %c ", '#'); 
+	}
+	
+	else if((tile == p1SabotageOrigin || tile == p1SabotageDest) && sabotageStatus == 1){	
+		printf("\033[0;%dm", p1Color);
+		printf(" %c ", 'y'); 
+	}
+
+	else if((tile == p2SabotageOrigin || tile == p2SabotageDest) && sabotageStatus == 1){
+		printf("\033[0;%dm", p2Color);
+		printf(" %c ", 'z'); 
+	}
+
+	else if(tile == upOriginA || tile == upDestA){ // Checks if the tile is an origin or destination tile
+		printf("\033[0;32m");
+		printf(" %c ", 'A'); 
+	}
+	else if(tile == upOriginB || tile == upDestB){ // Checks if the tile is an origin or destination tile
+		printf("\033[0;32m");
+		printf(" %c ", 'B'); 
+	}
+	else if(tile == upOriginC || tile == upDestC){ // Checks if the tile is an origin or destination tile
+		printf("\033[0;32m");
+		printf(" %c ", 'C'); 
+	}
+
+	else if(tile == downOriginA || tile == downDestA){
+		printf("\033[0;31m");
+		printf(" %c ", 'a'); 
+	}
+	else if(tile == downOriginB || tile == downDestB){
+		printf("\033[0;31m");
+		printf(" %c ", 'b'); 
+	}
+	else if(tile == downOriginC || tile == downDestC){
+		printf("\033[0;31m");
+		printf(" %c ", 'c'); 
+	}
+
+	else{
+		printf(" %c ", 254); // Prints the tile with the player's character
+	}
+	printf("\033[0m"); // Resets the color to default
+}
+
+
 /*
 	checkDuplicates() - Crosschecks if the inputted tile is currently occupied by a special tile
 	@param: tile - user-inputted tile
@@ -311,6 +414,7 @@ int checkDuplicates(int tile, int tile1, int tile2, int tile3, int tile4, int ti
 	else
 		return 0; // 0 = Duplicates not found
 }
+
 
 /*
 	showBoard() - Displays the game board with the current positions of the players and the sabotages, as well as the positions of the ups and downs.
@@ -411,140 +515,14 @@ void showBoard(int p1Color, int p2Color, int sabotageStatus, int *p1Tile, int *p
 		printf("\e[0;37m");
 		if(row%2==0){
 			for (tile=row*10-1; tile>row*10-11; tile--){
-				if(sabotageStatus == 1){
-					checkSabotageTile(p2Tile, p1SabotageOrigin, p1SabotageDest);
-					checkSabotageTile(p1Tile, p2SabotageOrigin, p2SabotageDest);
-				}
-
-				checkSpecialTile(p1Tile, p2Tile, upOriginA, upDestA);
-				checkSpecialTile(p1Tile, p2Tile, upOriginB, upDestB);
-				checkSpecialTile(p1Tile, p2Tile, upOriginC, upDestC);
-				
-				checkSpecialTile(p1Tile, p2Tile, downOriginA, downDestA);
-				checkSpecialTile(p1Tile, p2Tile, downOriginB, downDestB);
-				checkSpecialTile(p1Tile, p2Tile, downOriginC, downDestC);
-
-				if(*p1Tile == tile && *p2Tile == tile){ // Checks if both players are on the same tile
-					printf("\033[0;33m");
-					printTile('@');
-				}
-				else if(*p1Tile == tile){ //	Checks if player 1 is on the tile
-					printf("\033[0;%dm", p1Color);
-					printTile('$');
-				}
-				else if(*p2Tile == tile){ // Checks if player 2 is on the tile
-					printf("\033[0;%dm", p2Color);
-					printTile('#');
-				}
-				
-				else if((tile == p1SabotageOrigin || tile == p1SabotageDest) && sabotageStatus == 1){	
-					printf("\033[0;%dm", p1Color);
-					printTile('y');
-				}
-
-				else if((tile == p2SabotageOrigin || tile == p2SabotageDest) && sabotageStatus == 1){
-					printf("\033[0;%dm", p2Color);
-					printTile('z');
-				}
-
-				else if(tile == upOriginA || tile == upDestA){ // Checks if the tile is an origin or destination tile
-					printf("\033[0;32m");
-					printTile('A');
-				}
-				else if(tile == upOriginB || tile == upDestB){ // Checks if the tile is an origin or destination tile
-					printf("\033[0;32m");
-					printTile('B');
-				}
-				else if(tile == upOriginC || tile == upDestC){ // Checks if the tile is an origin or destination tile
-					printf("\033[0;32m");
-					printTile('C');
-				}
-
-				else if(tile == downOriginA || tile == downDestA){
-					printf("\033[0;31m");
-					printTile('a');
-				}
-				else if(tile == downOriginB || tile == downDestB){
-					printf("\033[0;31m");
-					printTile('b');
-				}
-				else if(tile == downOriginC || tile == downDestC){
-					printf("\033[0;31m");
-					printTile('c');
-				}
-
-				else{
-					printf(" %c ", 254); // Prints the tile with the player's character
-				}
-					}
+				printTile(tile, sabotageStatus, p1Color, p2Color, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
+				upA, upB, upC, downA, downB, downC, p1Tile, p2Tile);
+			}
 		}
 		else{
 			for (tile=row*10-10; tile<row*10; tile++){
-				if(sabotageStatus == 1){
-					checkSabotageTile(p2Tile, p1SabotageOrigin, p1SabotageDest);
-					checkSabotageTile(p1Tile, p2SabotageOrigin, p2SabotageDest);
-				}
-
-				checkSpecialTile(p1Tile, p2Tile, upOriginA, upDestA);
-				checkSpecialTile(p1Tile, p2Tile, upOriginB, upDestB);
-				checkSpecialTile(p1Tile, p2Tile, upOriginC, upDestC);
-				
-				checkSpecialTile(p1Tile, p2Tile, downOriginA, downDestA);
-				checkSpecialTile(p1Tile, p2Tile, downOriginB, downDestB);
-				checkSpecialTile(p1Tile, p2Tile, downOriginC, downDestC);
-
-				if(*p1Tile == tile && *p2Tile == tile){ // Checks if both players are on the same tile
-					printf("\033[0;33m");
-					printTile('@');
-				}
-				else if(*p1Tile == tile){ //	Checks if player 1 is on the tile
-					printf("\033[0;%dm", p1Color);
-					printTile('$');
-				}
-				else if(*p2Tile == tile){ // Checks if player 2 is on the tile
-					printf("\033[0;%dm", p2Color);
-					printTile('#');
-				}
-				
-				else if((tile == p1SabotageOrigin || tile == p1SabotageDest) && sabotageStatus == 1){	
-					printf("\033[0;%dm", p1Color);
-					printTile('y');
-				}
-
-				else if((tile == p2SabotageOrigin || tile == p2SabotageDest) && sabotageStatus == 1){
-					printf("\033[0;%dm", p2Color);
-					printTile('z');
-				}
-
-				else if(tile == upOriginA || tile == upDestA){ // Checks if the tile is an origin or destination tile
-					printf("\033[0;32m");
-					printTile('A');
-				}
-				else if(tile == upOriginB || tile == upDestB){ // Checks if the tile is an origin or destination tile
-					printf("\033[0;32m");
-					printTile('B');
-				}
-				else if(tile == upOriginC || tile == upDestC){ // Checks if the tile is an origin or destination tile
-					printf("\033[0;32m");
-					printTile('C');
-				}
-
-				else if(tile == downOriginA || tile == downDestA){
-					printf("\033[0;31m");
-					printTile('a');
-				}
-				else if(tile == downOriginB || tile == downDestB){
-					printf("\033[0;31m");
-					printTile('b');
-				}
-				else if(tile == downOriginC || tile == downDestC){
-					printf("\033[0;31m");
-					printTile('c');
-				}
-
-				else{
-					printf(" %c ", 254); // Prints the tile with the player's character
-				}
+				printTile(tile, sabotageStatus, p1Color, p2Color, p1SabotageOrigin, p1SabotageDest, p2SabotageOrigin, p2SabotageDest, 
+				upA, upB, upC, downA, downB, downC, p1Tile, p2Tile);
 			}
 		}
 		printf("\033[0;35m");
@@ -1055,9 +1033,9 @@ int main(){
 					break;
 				case 3:
 					showInstructions();
-					printf("\\033[0;35m");
+					printf("\033[0;35m");
 					printf(">>============================================================<<\n");	
-					printf("                 \033[0;36mBack to main menu?\n");
+					printf("                   \033[0;36mBack to main menu?\n");
 					printf("                  Please select an option:\033[0;35m\n");
 					printf(">>============================================================<<\n");
 					printf("\033[0;35m[1] \033[0;36mMain Menu\n");
